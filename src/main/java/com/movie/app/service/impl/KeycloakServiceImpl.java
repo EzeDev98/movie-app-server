@@ -49,10 +49,10 @@ public class KeycloakServiceImpl implements KeycloakService {
     }
 
     @Override
-    public void registerUserOnKeycloak(String username, String email, String password){
+    public void registerUserOnKeycloak(String username, String email, String password, String firstname, String lastname){
         Keycloak keycloak = getAdminKeycloakInstance();
 
-        UserRepresentation userRepresentation = getUserRepresentation(username, email, password);
+        UserRepresentation userRepresentation = getUserRepresentation(username, email, password, firstname, lastname);
 
         Response response = keycloak.realm(realm).users().create(userRepresentation);
 
@@ -65,10 +65,12 @@ public class KeycloakServiceImpl implements KeycloakService {
         LOGGER.info("User successfully registered on Keycloak with username: {}", username);
     }
 
-    private static UserRepresentation getUserRepresentation(String username, String email, String password) {
+    private static UserRepresentation getUserRepresentation(String username, String firstname, String lastname, String email, String password) {
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setUsername(username);
         userRepresentation.setEmail(email);
+        userRepresentation.setFirstName(firstname);
+        userRepresentation.setLastName(lastname);
         userRepresentation.setEnabled(true);
         userRepresentation.setEmailVerified(false);
 

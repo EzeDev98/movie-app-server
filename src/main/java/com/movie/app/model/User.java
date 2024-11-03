@@ -18,7 +18,8 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String fullName;
+    private String firstname;
+    private String lastname;
     private String username;
     private String email;
     private String phoneNumber;
@@ -31,8 +32,9 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String fullName, String username, String email, String phoneNumber, String password) {
-        this.fullName = fullName;
+    public User(String firstname, String lastname, String username, String email, String phoneNumber, String password) {
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.username = username;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -59,8 +61,12 @@ public class User implements UserDetails {
         return phoneNumber;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
     }
 
 

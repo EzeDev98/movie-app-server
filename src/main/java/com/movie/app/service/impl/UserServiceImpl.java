@@ -48,13 +48,14 @@ public class UserServiceImpl implements UserService {
 
         BaseResponse response  = new BaseResponse();
         try {
+
             validateRequest(registrationRequest);
 
             entityFinderUtilityService.checkIfEmailExist(registrationRequest.getEmail());
 
             User user = entityFinderUtilityService.createUser(registrationRequest);
 
-            keycloakService.registerUserOnKeycloak(registrationRequest.getUsername(), registrationRequest.getEmail(), registrationRequest.getPassword());
+            keycloakService.registerUserOnKeycloak(registrationRequest.getUsername(), registrationRequest.getEmail(), registrationRequest.getPassword(), registrationRequest.getFirstname(), registrationRequest.getLastname());
 
             String tokenLink = confirmTokenService.generateToken(user);
 
@@ -65,7 +66,9 @@ public class UserServiceImpl implements UserService {
                 LOGGER.warn("Token generation returned null or empty.");
             }
 
-            String emailPayload = emailService.buildEmail(registrationRequest.getFullName(), tokenLink);
+            String fullName = registrationRequest.getFirstname() + " " + registrationRequest.getLastname();
+
+            String emailPayload = emailService.buildEmail(fullName, tokenLink);
 
             emailService.sendEmail(user.getEmail(), emailPayload);
 

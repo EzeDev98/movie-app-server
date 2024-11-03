@@ -7,8 +7,11 @@ import lombok.*;
 @Getter
 @Setter
 public class RegistrationRequest {
-    @JsonProperty("full_name")
-    private String fullName;
+    @JsonProperty("first_name")
+    private String firstname;
+
+    @JsonProperty("last_name")
+    private String lastname;
 
     @JsonProperty("username")
     private String username;
@@ -25,9 +28,9 @@ public class RegistrationRequest {
     @JsonProperty("confirm_password")
     private String confirmPassword;
 
-
-    public RegistrationRequest(String fullName, String username, String email, String phoneNumber, String password, String confirmPassword) {
-        this.fullName = fullName;
+    public RegistrationRequest(String firstname, String lastname, String username, String email, String phoneNumber, String password, String confirmPassword) {
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.username = username;
         this.email = email;
         this.phoneNumber = phoneNumber;
