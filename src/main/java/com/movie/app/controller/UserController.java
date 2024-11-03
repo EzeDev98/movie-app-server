@@ -5,6 +5,7 @@ import com.movie.app.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,9 @@ public class UserController {
     }
 
     @PostMapping("/register-user")
-    public void register(@RequestBody RegistrationRequest registrationRequest) {
-         userService.signUp(registrationRequest);
+    public ResponseEntity<BaseResponse> register(@RequestBody RegistrationRequest registrationRequest) {
+       BaseResponse response = userService.signUp(registrationRequest);
+       return ResponseEntity.ok(response);
     }
 
 //    @GetMapping(path = "confirm")

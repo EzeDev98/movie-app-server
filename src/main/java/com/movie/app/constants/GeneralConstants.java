@@ -9,4 +9,10 @@ public class GeneralConstants {
     public static final String ADMIN_USERNAME = "ezedev";
     public static final String ADMIN_PASSWORD = "9898";
     public static final String LINK = "http://localhost:9090/confirm?token=";
+
+    private static final String SENDER_EMAIL = "postmaster@sandbox664efd2a30fd45c699db9e60898c8676.mailgun.org";
+
+    private static final String SENDER_NAME = "Eze";
+
+    public static final String FROM_FIELD = SENDER_NAME + " <" + SENDER_EMAIL + ">";
 }

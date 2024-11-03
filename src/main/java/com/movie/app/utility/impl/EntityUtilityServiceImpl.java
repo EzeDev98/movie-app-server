@@ -85,6 +85,7 @@ public class EntityUtilityServiceImpl implements EntityUtilityService {
     public User createUser(RegistrationRequest request) {
         User user = new User();
         user.setFullName(request.getFullName());
+        user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setPassword(passwordManagerService.encryptPassword(request.getPassword()));

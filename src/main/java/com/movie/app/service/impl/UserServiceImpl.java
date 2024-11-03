@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.InternalServerErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -57,9 +58,16 @@ public class UserServiceImpl implements UserService {
 
             String tokenLink = confirmTokenService.generateToken(user);
 
+            // Log the generated token for debugging
+            if (tokenLink != null && !tokenLink.isEmpty()) {
+                LOGGER.info("Generated confirmation token: {}", tokenLink);
+            } else {
+                LOGGER.warn("Token generation returned null or empty.");
+            }
+
             String emailPayload = emailService.buildEmail(registrationRequest.getFullName(), tokenLink);
 
-            emailService.send(user.getEmail(), emailPayload);
+            emailService.sendEmail(user.getEmail(), emailPayload);
 
             return responseService.createSuccessResponse(response, "User registration is successful");
 

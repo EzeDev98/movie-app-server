@@ -46,6 +46,8 @@ public class ConfirmTokenServiceImpl implements ConfirmTokenService {
 
         String token = keycloakService.getKeycloakToken(user.getUsername(), user.getPassword());
 
+        System.out.println("Token" + token);
+
         ConfirmToken confirmToken = new ConfirmToken(token, LocalDateTime.now(), expirationTime, user);
 
         saveToken(confirmToken);
