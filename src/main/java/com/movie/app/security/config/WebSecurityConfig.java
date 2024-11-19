@@ -19,7 +19,9 @@ public class WebSecurityConfig {
         return httpSecurity.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/api/v1/register-user").permitAll()
+                        .requestMatchers( "/api/v1/login-user").permitAll()
                         .requestMatchers( "/api/v1/send-email").permitAll()
+                        .requestMatchers( "/api/v1/confirm**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();

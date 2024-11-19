@@ -78,6 +78,21 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(TokenExpiredException.class)
+    public ProblemDetail handleTokenExpiredException(TokenExpiredException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.GONE, ex.getMessage());
+    }
+
+    @ExceptionHandler(TokenNotConfirmedException.class)
+    public ProblemDetail handleTokenNotConfirmedException(TokenNotConfirmedException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(TokenAlreadyConfirmedException.class)
+    public ProblemDetail handleTokenAlreadyConfirmedException(TokenAlreadyConfirmedException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.GONE, ex.getMessage());
+    }
+
     @ExceptionHandler(InvalidPasswordException.class)
     public ProblemDetail handleInvalidPasswordException(InvalidPasswordException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());

@@ -34,7 +34,6 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public MailJetResponse sendEmail(String email, String link) throws EmailException {
         try {
-            // Validate EmailDTO fields
             if (email == null || link == null) {
                 throw new EmailException("Email details are missing");
             }
@@ -49,7 +48,6 @@ public class EmailServiceImpl implements EmailService {
     }
 
     private MailJetResponse sendEmailToMailjet(String recipient, String subject, String content) {
-        logger.debug("Sending Email via Mailjet: Recipient: {}, Subject: {}", recipient, subject);
         HttpURLConnection connection = null;
         MailJetResponse response = null;
 
@@ -80,10 +78,8 @@ public class EmailServiceImpl implements EmailService {
             // Read the response
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                logger.info("Email sent successfully via Mailjet");
                 response = new MailJetResponse("Success", responseCode);
             } else {
-                logger.error("Failed to send email. Response code: {}", responseCode);
                 response = new MailJetResponse("Failure", responseCode);
             }
 

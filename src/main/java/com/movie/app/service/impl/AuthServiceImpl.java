@@ -19,7 +19,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AccessTokenResponse authenticateUser(String phoneNumber, String password) {
         try {
-            AccessTokenResponse accessTokenResponse = keycloak.keycloakAuthentication(phoneNumber, password);
+            AccessTokenResponse accessTokenResponse = keycloak.KeycloakAuthentication(phoneNumber, password);
             return accessTokenResponse;
         } catch (Exception ex) {
             LOGGER.error("Error during keycloak authentication", ex.getMessage());

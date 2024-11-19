@@ -1,10 +1,13 @@
 package com.movie.app.controller;
 import com.movie.app.dto.RegistrationRequest;
+import com.movie.app.dto.UserRequest;
 import com.movie.app.response.BaseResponse;
 import com.movie.app.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,36 +25,13 @@ public class UserController {
 
     @PostMapping("/register-user")
     public ResponseEntity<BaseResponse> register(@RequestBody RegistrationRequest registrationRequest) {
-       BaseResponse response = userService.signUp(registrationRequest);
-       return ResponseEntity.ok(response);
+       return userService.signUp(registrationRequest);
     }
 
-//    @GetMapping(path = "confirm")
-//    public String confirm(@RequestParam("token") String token) {
-//        return confirmTokenService.confirmToken(token);
-//    }
-//
-//    @GetMapping("/activate")
-//    public String activate() {
-//        return "activate";
-//    }
-//
-//    @GetMapping("/confirmed")
-//    public String confirmed() {
-//        return "confirmed";
-//    }
-//
-//    @GetMapping("/login")
-//    public String getLoginPage(@RequestParam(value = "error", required = false) String error, Model model) {
-//        if (error != null) {
-//            model.addAttribute("errorMessage", "Invalid username or password.");
-//        }
-//        return "login";
-//    }
-//
-//    @GetMapping("/contact")
-//    public String contactPage(Model model) {
-//        model.addAttribute("page", "contact");
-//        return "contact";
-//    }
+    @PostMapping("/login-user")
+    public ResponseEntity<BaseResponse> login(@RequestBody UserRequest userRequest) {
+        BaseResponse response = userService.login(userRequest);
+        return ResponseEntity.ok(response);
+    }
+
 }

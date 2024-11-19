@@ -13,6 +13,7 @@ import com.movie.app.utility.PasswordManagerService;
 import com.movie.app.utility.ValidateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -84,7 +85,8 @@ public class EntityUtilityServiceImpl implements EntityUtilityService {
     @Override
     public User createUser(RegistrationRequest request) {
         User user = new User();
-        user.setFullName(request.getFullName());
+        user.setFirstname(request.getFirstname());
+        user.setLastname(request.getLastname());
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPhoneNumber(request.getPhoneNumber());
@@ -96,8 +98,14 @@ public class EntityUtilityServiceImpl implements EntityUtilityService {
     @Override
     public boolean isLoggedIn(User user) {
         return userRepository.findById(user.getId()).
-                map(User::getStatus)
+                map(User::isStatus)
                 .orElse(false);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found: " + username));
     }
 
 }
