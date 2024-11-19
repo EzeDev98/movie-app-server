@@ -42,6 +42,6 @@ public class ValidateServiceImpl implements ValidateService {
 
     @Override
     public boolean validatePhoneNumber(String phoneNumber) {
-        return phoneNumber != null && phoneNumber.matches("\\d{11}");
+        return phoneNumber != null && phoneNumber.length() == 11 && phoneNumber.chars().allMatch(Character::isDigit);
     }
 }

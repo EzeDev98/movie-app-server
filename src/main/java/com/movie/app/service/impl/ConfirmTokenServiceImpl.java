@@ -1,11 +1,17 @@
 package com.movie.app.service.impl;
 
+import com.movie.app.exception.TokenAlreadyConfirmedException;
+import com.movie.app.exception.TokenExpiredException;
+import com.movie.app.exception.TokenNotConfirmedException;
+import com.movie.app.exception.TokenNotFoundException;
 import com.movie.app.model.ConfirmToken;
 import com.movie.app.model.User;
 import com.movie.app.repositories.ConfirmTokenRepository;
+import com.movie.app.response.TokenResponse;
 import com.movie.app.service.ConfirmTokenService;
 import com.movie.app.service.KeycloakService;
 import com.movie.app.utility.EntityUtilityService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,9 +48,9 @@ public class ConfirmTokenServiceImpl implements ConfirmTokenService {
 
         LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(10);
 
-//        Date expirationDate = Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant());
+        String token = keycloakService.authenticateAndGetToken(user.getUsername(), user.getPassword());
 
-        String token = keycloakService.getKeycloakToken(user.getUsername(), user.getPassword());
+        System.out.println("Token" + token);
 
         ConfirmToken confirmToken = new ConfirmToken(token, LocalDateTime.now(), expirationTime, user);
 
@@ -57,34 +63,38 @@ public class ConfirmTokenServiceImpl implements ConfirmTokenService {
 
     @Transactional
     @Override
-    public String confirmToken(String token) {
+    public TokenResponse confirmToken(String token) {
         ConfirmToken confirmToken = getToken(token);
 
         if (confirmToken == null) {
-            throw new IllegalStateException("Token not found");
+            throw new TokenNotFoundException("Token not found");
         }
 
         if (confirmToken.getConfirmedAt() != null) {
-            return "redirect:/confirmed";
+            throw new TokenAlreadyConfirmedException("Token has already been confirmed");
         }
 
         LocalDateTime expiresAt = confirmToken.getExpiresAt();
-
         if (expiresAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("Token expired");
+            throw new TokenExpiredException("Token expired");
         }
 
         setConfirmedAt(token);
 
         entityUtilityService.enableUser(confirmToken.getUser().getEmail());
-
         entityUtilityService.unLockUser(confirmToken.getUser().getEmail());
 
-        return "redirect:/login";
+        return new TokenResponse("Click on the link below to sign in to your account", HttpServletResponse.SC_OK, true);
     }
 
     private void setConfirmedAt(String token) {
         ConfirmToken confirmToken = entityUtilityService.findByToken(token);
-        confirmToken.setConfirmedAt(LocalDateTime.now());
+        if (confirmToken !=null ) {
+            confirmToken.setConfirmedAt(LocalDateTime.now());
+            confirmTokenRepository.save(confirmToken);
+        } else {
+            throw new TokenNotFoundException("Token not found during confirmation.");
+        }
+
     }
 }

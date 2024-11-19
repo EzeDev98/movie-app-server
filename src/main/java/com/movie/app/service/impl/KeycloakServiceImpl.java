@@ -49,10 +49,10 @@ public class KeycloakServiceImpl implements KeycloakService {
     }
 
     @Override
-    public void registerUserOnKeycloak(String username, String email, String password){
+    public void registerUserOnKeycloak(String username, String firstname, String lastname, String email, String password){
         Keycloak keycloak = getAdminKeycloakInstance();
 
-        UserRepresentation userRepresentation = getUserRepresentation(username, email, password);
+        UserRepresentation userRepresentation = getUserRepresentation(username, firstname, lastname, email, password);
 
         Response response = keycloak.realm(realm).users().create(userRepresentation);
 
@@ -65,10 +65,12 @@ public class KeycloakServiceImpl implements KeycloakService {
         LOGGER.info("User successfully registered on Keycloak with username: {}", username);
     }
 
-    private static UserRepresentation getUserRepresentation(String username, String email, String password) {
+    private static UserRepresentation getUserRepresentation(String username, String firstname, String lastname, String email, String password) {
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setUsername(username);
         userRepresentation.setEmail(email);
+        userRepresentation.setFirstName(firstname);
+        userRepresentation.setLastName(lastname);
         userRepresentation.setEnabled(true);
         userRepresentation.setEmailVerified(false);
 
@@ -81,22 +83,7 @@ public class KeycloakServiceImpl implements KeycloakService {
     }
 
     @Override
-    public String getKeycloakToken(String username, String password) {
-        Keycloak userToken = KeycloakBuilder.builder()
-                .serverUrl(authServerUrl)
-                .realm(realm)
-                .clientId(adminClientId)
-                .clientSecret(adminClientSecret)
-                .username(username)
-                .password(password)
-                .grantType("password")
-                .build();
-        return userToken.tokenManager().getAccessToken().getToken();
-    }
-
-
-    @Override
-    public AccessTokenResponse keycloakAuthentication(String username, String password) {
+    public String authenticateAndGetToken(String username, String password) {
         try {
             Keycloak keycloak = KeycloakBuilder.builder()
                     .serverUrl(authServerUrl)
@@ -107,10 +94,32 @@ public class KeycloakServiceImpl implements KeycloakService {
                     .username(username)
                     .password(password)
                     .build();
-            return keycloak.tokenManager().getAccessToken();
+            AccessTokenResponse tokenResponse = keycloak.tokenManager().getAccessToken();
+            return tokenResponse.getToken();
         } catch (Exception ex) {
-            throw new KeycloakAuthenticationException("Failed to authenticate with Keycloak");
+            LOGGER.error("Failed to generate token for user {}", username, ex);
+            throw new KeycloakAuthenticationException("Failed to authenticate and generate token for user.");
         }
     }
 
+    @Override
+    public AccessTokenResponse KeycloakAuthentication(String username, String password) {
+        try {
+            Keycloak keycloak = KeycloakBuilder.builder()
+                    .serverUrl(authServerUrl)
+                    .realm(realm)
+                    .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+                    .clientId(adminClientId)
+                    .clientSecret(adminClientSecret)
+                    .username(username)
+                    .password(password)
+                    .build();
+            AccessTokenResponse tokenResponse = keycloak.tokenManager().getAccessToken();
+            LOGGER.info("Generated token for user {}: {}", username, tokenResponse.getToken());
+            return tokenResponse;
+        } catch (Exception ex) {
+            LOGGER.error("Failed to generate token for user {}", username, ex);
+            throw new KeycloakAuthenticationException("Failed to authenticate and generate token for user.");
+        }
+    }
 }

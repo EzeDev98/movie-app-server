@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.movie.app*","org.springdoc"})
 public class MovieAppApplication {
 
 	public static void main(String[] args) {

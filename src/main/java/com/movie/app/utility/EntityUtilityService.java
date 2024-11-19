@@ -14,4 +14,5 @@ public interface EntityUtilityService {
     void unLockUser(String email);
     User createUser(RegistrationRequest request);
     boolean isLoggedIn(User user);
+    User findByUsername(String username);
 }
